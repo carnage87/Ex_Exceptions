@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Exercicios_de_Fixacao_7.Entities.Exceptions;
+using System.Globalization;
 
 namespace Exercicios_de_Fixacao_7.Entities
 {
@@ -9,7 +10,7 @@ namespace Exercicios_de_Fixacao_7.Entities
     {
         public int Number { get; private set; }
         public string Holder { get; set; }
-        public double Balance { get; set; }
+        public double Balance { get; private set; }
         public double WithdrawLimit { get; set; }
 
         public Account(int number, string holder, double balance, double withdrawLimit)
@@ -35,7 +36,20 @@ namespace Exercicios_de_Fixacao_7.Entities
 
         public void Withdraw(double amount)
         {
+            if (amount > WithdrawLimit)
+            {
+                throw new DomainException("Withdraw limit exceeded.");
+            }
+            if (amount > Balance)
+            {
+                throw new DomainException("Balance cannot stay negative.");
+            }
             Balance -= amount;
+        }
+
+        public override string ToString()
+        {
+            return "New balance: $" + Balance.ToString("F2", CultureInfo.InvariantCulture);
         }
     }
 }
